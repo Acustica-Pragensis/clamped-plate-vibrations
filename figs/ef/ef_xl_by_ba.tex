@@ -1,0 +1,74 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\usepgfplotslibrary{statistics, groupplots}
+\pgfplotsset{compat=1.18}
+
+\definecolor{myorange}{HTML}{fa7528}
+\definecolor{mypurple}{HTML}{9F0954}
+
+\begin{document}
+
+% ---------------- left: training, right: test ----------------
+\begin{tikzpicture}
+\begin{groupplot}[
+    group style={
+        group size=2 by 1,
+        horizontal sep=.5cm,
+        y descriptions at=edge left,
+        x descriptions at=edge bottom,
+    },
+    height=6.0cm,
+    boxplot={draw direction=y, box extend=0.30},
+    xlabel style={yshift=-7pt},
+    ymin=-0.05, ymax=3,
+    ytick={0,0.5,1,1.5,2,2.5},
+    xlabel={$b/a$},
+    ylabel={$\mathrm{Err}_f$/ \%},
+    xticklabel style={rotate=0, inner sep=1.5pt, yshift=-3pt},
+    grid=both,
+    grid style={dotted, gray!60},
+]
+\nextgroupplot[legend columns=2,
+               legend style={draw=none, at={(0.02,0.98)}, anchor=north west},
+               legend cell align=left,
+    xtick={1,2,3,4,5,6,7},
+    xticklabels={1.03,1.10,1.18,1.40,1.50,1.70,1.80},
+    xmin=0.5, xmax=7.5,
+    width=9.2cm,
+    ]
+\addlegendimage{area legend, color=myorange, fill=myorange!20}
+\addlegendentry{present approximation}
+\addlegendimage{area legend, color=mypurple, fill=mypurple!20}
+\addlegendentry{Xing \& Liu}
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=0.8, boxplot prepared={median=0.150, upper quartile=0.303, lower quartile=0.075, upper whisker=0.738, lower whisker=0.018}] coordinates {}; % 1.03 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=1.2, boxplot prepared={median=0.591, upper quartile=0.858, lower quartile=0.376, upper whisker=2.485, lower whisker=0.152}] coordinates {}; % 1.03 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=1.8, boxplot prepared={median=0.152, upper quartile=0.289, lower quartile=0.067, upper whisker=0.726, lower whisker=0.026}] coordinates {}; % 1.10 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=2.2, boxplot prepared={median=0.583, upper quartile=0.870, lower quartile=0.374, upper whisker=2.429, lower whisker=0.165}] coordinates {}; % 1.10 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=2.8, boxplot prepared={median=0.140, upper quartile=0.279, lower quartile=0.061, upper whisker=0.691, lower whisker=0.020}] coordinates {}; % 1.18 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=3.2, boxplot prepared={median=0.564, upper quartile=0.882, lower quartile=0.356, upper whisker=2.311, lower whisker=0.162}] coordinates {}; % 1.18 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=3.8, boxplot prepared={median=0.116, upper quartile=0.256, lower quartile=0.062, upper whisker=0.558, lower whisker=0.020}] coordinates {}; % 1.40 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=4.2, boxplot prepared={median=0.535, upper quartile=0.800, lower quartile=0.329, upper whisker=1.851, lower whisker=0.148}] coordinates {}; % 1.40 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=4.8, boxplot prepared={median=0.137, upper quartile=0.279, lower quartile=0.068, upper whisker=0.543, lower whisker=0.021}] coordinates {}; % 1.50 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=5.2, boxplot prepared={median=0.535, upper quartile=0.789, lower quartile=0.306, upper whisker=1.637, lower whisker=0.140}] coordinates {}; % 1.50 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=5.8, boxplot prepared={median=0.243, upper quartile=0.380, lower quartile=0.103, upper whisker=0.591, lower whisker=0.029}] coordinates {}; % 1.70 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=6.2, boxplot prepared={median=0.503, upper quartile=0.833, lower quartile=0.260, upper whisker=1.357, lower whisker=0.117}] coordinates {}; % 1.70 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=6.8, boxplot prepared={median=0.339, upper quartile=0.452, lower quartile=0.125, upper whisker=0.615, lower whisker=0.039}] coordinates {}; % 1.80 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=7.2, boxplot prepared={median=0.475, upper quartile=0.874, lower quartile=0.240, upper whisker=1.336, lower whisker=0.122}] coordinates {}; % 1.80 xl
+\nextgroupplot[
+    xtick={1,2,3,4},
+    xticklabels={1.30,1.60,1.90,2.00},
+    xmin=0.5, xmax=4.5,
+    width=5.9cm,
+    ]
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=0.8, boxplot prepared={median=0.112, upper quartile=0.218, lower quartile=0.046, upper whisker=0.443, lower whisker=0.019}] coordinates {}; % 1.30 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=1.2, boxplot prepared={median=0.501, upper quartile=0.759, lower quartile=0.340, upper whisker=2.070, lower whisker=0.131}] coordinates {}; % 1.30 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=1.8, boxplot prepared={median=0.149, upper quartile=0.303, lower quartile=0.092, upper whisker=0.443, lower whisker=0.037}] coordinates {}; % 1.60 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=2.2, boxplot prepared={median=0.490, upper quartile=0.722, lower quartile=0.270, upper whisker=1.453, lower whisker=0.106}] coordinates {}; % 1.60 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=2.8, boxplot prepared={median=0.383, upper quartile=0.516, lower quartile=0.224, upper whisker=0.612, lower whisker=0.068}] coordinates {}; % 1.90 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=3.2, boxplot prepared={median=0.432, upper quartile=0.876, lower quartile=0.214, upper whisker=1.311, lower whisker=0.080}] coordinates {}; % 1.90 xl
+\addplot [color=myorange, fill=myorange!20, boxplot/draw position=3.8, boxplot prepared={median=0.450, upper quartile=0.582, lower quartile=0.336, upper whisker=0.734, lower whisker=0.133}] coordinates {}; % 2.00 own
+\addplot [color=mypurple, fill=mypurple!20, boxplot/draw position=4.2, boxplot prepared={median=0.398, upper quartile=0.877, lower quartile=0.206, upper whisker=1.272, lower whisker=0.085}] coordinates {}; % 2.00 xl
+\end{groupplot}
+\end{tikzpicture}
+
+\end{document}

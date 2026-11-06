@@ -1,0 +1,125 @@
+\documentclass[11pt]{standalone}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+% Data location: works when compiling from figs/em, from nonperf/, or from
+% the repository root.
+\newcommand{\emdatadir}{../../data/em/chosen_modes}
+\IfFileExists{\emdatadir/unit_sq_X.csv}{}{%
+    \renewcommand{\emdatadir}{data/em/chosen_modes}%
+}
+\IfFileExists{\emdatadir/unit_sq_X.csv}{}{%
+    \renewcommand{\emdatadir}{nonperf/data/em/chosen_modes}%
+}
+
+% Colour-blind-friendly palette (Okabe-Ito) with strong contrast on white.
+\definecolor{lineblue}{HTML}{0072B2}
+\definecolor{lineorange}{HTML}{E69F00}
+\definecolor{linegreen}{HTML}{009E73}
+\definecolor{linepurple}{HTML}{CC79A7}
+
+% Larger tick/axis text so the figure survives scaling to a journal column.
+\pgfplotsset{
+    every axis/.append style={
+        tick label style={font=\large},
+        label style={font=\Large},
+        axis line style={line width=0.8pt},
+        tick style={line width=0.8pt},
+        legend style={
+            font=\large,
+            draw=gray!35,
+            fill=white,
+            fill opacity=0.90,
+            text opacity=1,
+            rounded corners=1pt,
+            inner sep=3pt,
+        },
+    },
+}
+
+% Column layout of unit_sq_X.csv / unit_sq_Y.csv:
+%   coordinate, W11, W13, W31, W33
+% Data rows are normalised by the maximum absolute value of their column,
+% exactly as in em_2_fem_separability.py; X31 and Y31 are also negated there.
+% The coordinate runs over [0, 1] in the COMSOL export and is shifted to
+% [-0.5, 0.5] for plotting.
+%
+% Every profile uses the same solid line style.
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{groupplot}[
+        group style={
+            group size=2 by 1,
+            horizontal sep=2cm,
+        },
+        width=7.5cm,
+        height=6cm,
+        grid=both,
+        grid style={dotted, gray!45},
+        xmin=-0.5, xmax=0.5,
+        ymin=-1.1, ymax=1.1,
+        legend style={
+            at={(0.5,-0.32)},
+            anchor=north,
+            legend columns=4,
+            column sep=4pt,
+        },
+    ]
+
+    % --- Left Plot: X Profiles ---
+    \nextgroupplot[xlabel={$\bar{x}$},
+                   ylabel={$X_{mn}(\bar{x})$}]
+        \addplot[lineblue,   line width=1.8pt]
+            table [x expr=\thisrowno{0}-0.5,
+                   y expr=\thisrowno{1}/2.46325602420609,
+                   col sep=comma, header=false, comment chars=\%]
+            {\emdatadir/unit_sq_X.csv}; \addlegendentry{$X_{11}$}
+        \addplot[lineorange, line width=1.8pt]
+            table [x expr=\thisrowno{0}-0.5,
+                   y expr=\thisrowno{2}/3.03055299109746,
+                   col sep=comma, header=false, comment chars=\%]
+            {\emdatadir/unit_sq_X.csv}; \addlegendentry{$X_{13}$}
+        \addplot[linegreen,  line width=1.8pt]
+            table [x expr=\thisrowno{0}-0.5,
+                   y expr=-\thisrowno{3}/3.21402596379612,
+                   col sep=comma, header=false, comment chars=\%]
+            {\emdatadir/unit_sq_X.csv}; \addlegendentry{$X_{31}$}
+        \addplot[linepurple, line width=1.8pt]
+            table [x expr=\thisrowno{0}-0.5,
+                   y expr=\thisrowno{4}/2.15354055129459,
+                   col sep=comma, header=false, comment chars=\%]
+            {\emdatadir/unit_sq_X.csv}; \addlegendentry{$X_{33}$}
+
+    % --- Right Plot: Y Profiles ---
+    \nextgroupplot[xlabel={$\bar{y}$},
+                   ylabel={$Y_{mn}(\bar{y})$}]
+        \addplot[lineblue,   line width=1.8pt]
+            table [x expr=\thisrowno{0}-0.5,
+                   y expr=\thisrowno{1}/2.46325599681566,
+                   col sep=comma, header=false, comment chars=\%]
+            {\emdatadir/unit_sq_Y.csv}; \addlegendentry{$Y_{11}$}
+        \addplot[lineorange, line width=1.8pt]
+            table [x expr=\thisrowno{0}-0.5,
+                   y expr=\thisrowno{2}/3.21418656919623,
+                   col sep=comma, header=false, comment chars=\%]
+            {\emdatadir/unit_sq_Y.csv}; \addlegendentry{$Y_{13}$}
+
+        % X31 / Y31 are negated to match em_2_fem_separability.py.
+        \addplot[linegreen,  line width=1.8pt]
+            table [x expr=\thisrowno{0}-0.5,
+                   y expr=-\thisrowno{3}/3.03087203532912,
+                   col sep=comma, header=false, comment chars=\%]
+            {\emdatadir/unit_sq_Y.csv}; \addlegendentry{$Y_{31}$}
+
+        \addplot[linepurple, line width=1.8pt]
+            table [x expr=\thisrowno{0}-0.5,
+                   y expr=\thisrowno{4}/2.15354075565811,
+                   col sep=comma, header=false, comment chars=\%]
+            {\emdatadir/unit_sq_Y.csv}; \addlegendentry{$Y_{33}$}
+
+    \end{groupplot}
+\end{tikzpicture}
+\end{document}

@@ -5,72 +5,56 @@
 Based on data-driven discovery, we provide analytical approximations obtained using symbolic regression,
 which help understand the direct influence of geometry parameters, and speed up the MEMS transducers/microphones design.
 
-![Graphical Abstract](figs/paper/graphical_abstract/ga.png)
-
 ### Project Structure
 
 ```text
-ef_nonperf/
+nonperf/
 ├── data/
-│   ├── comsol/                 # raw COMSOL output, never edited by hand
-│   │   ├── freqs_full20261016_112507_v1.csv
-│   │   ├── freqs_full20261016_133325_v2.csv
-│   │   └── mesh_study_v{1,2,3}.csv
-│   ├── reference/              # hand-made lookup tables
-│   │   └── comsol_modes.csv
-│   └── processed/              # everything Python produces downstream
-│       ├── ef_selected_modes_v1.csv
-│       ├── ef_selected_modes_v2.csv
-│       └── ef_pysr_v1.csv
+│   ├── comsol_modes.csv                   # hand-made lookup table of COMSOL mode shapes
+│   ├── mesh_study_ba1.03.csv              # raw mesh-convergence output, b/a = 1.03
+│   ├── mesh_study_ba2.00.csv              # raw mesh-convergence output, b/a = 2.00
+│   ├── em_inventory.csv                   # split/ba/a/h index of the EM export files
+│   ├── ef/
+│   │   ├── ef_comsol_train.csv            # full COMSOL eigenfrequency sweep, train geometries
+│   │   ├── ef_comsol_test.csv             # full COMSOL eigenfrequency sweep, test geometries
+│   │   ├── ef_selected_train.csv          # selected eigenvalues f11..f33, train split
+│   │   ├── ef_selected_test.csv           # selected eigenvalues f11..f33, test split
+│   │   ├── ef_pysr.csv                    # PySR training table (y = f, x = a, b, h, m, n)
+│   │   ├── ef_materials.csv               # COMSOL eigenfrequencies for the four-material sweep
+│   │   └── compare_results_vs_FEM.csv     # hall-of-fame reconstruction vs train FEM reference
+│   └── em/
+│       └── chosen_modes/                  # per-geometry W/X/Y exports and unit-plate reference fields
 ├── figs/
-├── outputs/                    # PySR runs
-├── 0_run_sweep.m
-├── 0_eigenfunctions_rectangle_full.m
-├── 0_run_mesh_study.m
-├── 1_prepare_data_stage1.py
-├── 2_prepare_data_stage2.py
-├── 3_ef_sr_rectangle.py
-├── 3_mesh_study.py
-├── 4_ef_hof_to_py.py
-├── 4_ef_hof_to_latex.py
-├── 5_ef_revision1_all_models.py
-├── hof_equations_v1.py         # generated, imported by step 5
-└── paths.py                    # every data path as one constant
-```
-
-```text
-PLATE_EIGENFUNCTIONS/
-│
-├── src/                             # utilities
-│   ├── __init__.py
-│   ├── utils.py                     # e.g., phi_series_term
-│   └── visualize.py                 # plotting templates
-│
-├── ef_non_perf/                     # Eigenfrequencies of non-perforated plates
-│   ├── data/                        # data for data-driven discovery and validation
-│   ├── figs/                        # exported figures
-│   ├── search_equations.py          # Symbolic regression loop
-│   ├── validate_equations.py        # Equation validation against data
-│   └── generate_figs.py             # Script for figures & final CSV export
-│
-├── ef_perf/                         # Eigenfrequencies of perforated plates
-│   ├── data/
-│   ├── figs/
-│   ├── 
-│   ├── 
-│   └── 
-│
-├── em_non_perf/                     # Eigenmodes of non-perforated plates
-│   ├── data/
-│   ├── figs/
-│   ├── 
-│   ├── 
-│   └── 
-│
-└── em_perf/                         # Eigenmodes of perforated plates
-    ├── data/
-    ├── figs/
-    ├── em_perf_micromachines.py
-    └── em_perf_variation.py
-
+│   ├── ef/                                # EF boxplots: PNG, TikZ (.tex) and compiled PDF
+│   └── em/                                # EM figures, profile CSVs and TikZ/PDF outputs
+├── outputs/                               # PySR run directories (hall_of_fame.csv, checkpoint)
+├── a_run_mesh_study.m                     # step 1: mesh convergence study (MATLAB)
+├── b_run_sweep.m                          # step 2: full eigenfrequency sweep (MATLAB)
+├── c_rectangle.m                          # helper function, called by a_ and b_ (MATLAB)
+├── d_ef_other_materials_comsol.m          # four-material eigenfrequency sweep (MATLAB)
+├── 0_mesh_study.py                        # processes data/mesh_study_ba*.csv
+├── ef_1_prepare_data_stage1.py            # all comsol data -> selected modes f11..f33
+├── ef_2_prepare_data_stage2.py            # selected modes -> one row per (sample, mode) for PySR
+├── ef_3_sr.py                             # symbolic regression run (PySR)
+├── ef_4_hof_export.py                     # PySR hall of fame -> hof_equations*.py / .tex
+├── ef_5_compare.py                        # evaluate hall-of-fame equations vs train FEM
+├── ef_6_test.py                           # present approximation vs Mitchell & Hazell, train + test
+├── ef_7_test_materials.py                 # present approximation vs four-material COMSOL sweep
+├── ef_8_compare_XL.py                     # present approximation vs Xing & Liu, train + test
+├── em_1_prepare_data.py                   # raw COMSOL exports -> data/em/chosen_modes
+├── em_2_fem_separability.py               # check W(x,y) = X(x) Y(y) in the FEM modes
+├── em_3_xy_variation.py                   # X/Y profile variation with b/a, export TikZ CSVs
+├── em_4_sr_mode11.py                      # symbolic regression for the mode-11 profile
+├── em_4_sr_mode33.py                      # symbolic regression for the mode-33 profile
+├── em_5_finetune_mode11.py                # assess the mode-11 profile product vs FEM
+├── em_6_finetune_mode33.py                # assess the mode-33 profile product vs FEM
+├── em_7_finetune_mode13_31.py             # fit modes 13/31; compare against the 11 x 33 product
+├── em_8_show_modes_unit.py                # unit plate: present vs Xing & Liu vs FEM
+├── em_9_test_modes_all_geometries.py      # present vs Xing & Liu over all geometries
+├── xl.py                                  # shared Xing & Liu (2009) solver and mode assignment
+├── hof_equations.py                       # generated by ef_4_hof_export.py, imported by ef_5
+├── hof_equations_delta.py                 # generated delta-form variant
+├── hof_equations.tex                      # generated by ef_4_hof_export.py
+├── hof_equations_delta.tex                # generated delta-form variant
+└── readme.md
 ```

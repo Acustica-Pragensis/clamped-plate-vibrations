@@ -1,0 +1,94 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+
+% Define 11 Hardcoded Jet Colors
+\definecolor{color1}{RGB}{0,0,131}    % Dark Blue
+\definecolor{color2}{RGB}{0,0,255}    % Blue
+\definecolor{color3}{RGB}{0,139,255}  % Sky Blue
+\definecolor{color4}{RGB}{0,255,255}  % Cyan
+\definecolor{color5}{RGB}{128,255,128}% Pale Green
+\definecolor{color6}{RGB}{255,255,0}  % Yellow
+\definecolor{color7}{RGB}{255,191,0}  % Gold
+\definecolor{color8}{RGB}{255,128,0}  % Orange
+\definecolor{color9}{RGB}{255,0,0}    % Red
+\definecolor{color10}{RGB}{191,0,0}   % Crimson
+\definecolor{color11}{RGB}{128,0,0}   % Maroon
+
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{groupplot}[
+        group style={group size=2 by 1, horizontal sep=2cm},
+        width=10cm, height=5cm,
+        grid=both,
+        grid style={dotted, gray!60},
+        xlabel={Dimensionless Coordinate},
+        ylabel={Normalized Deflection},
+        % ymin=-1, ymax=1.05,
+        % xmin=-0.51, xmax=0.51,
+        % legend style={font=\tiny, at={(1,1)}, anchor=north east, nodes={right}}
+        legend style={
+            % font=\tiny,
+            at={(1.1, 1.0)}, % Positioned above the center of the group
+            anchor=south,
+            legend columns=-1, % Spreads 11 items across 2 rows
+            draw=none,        % No border for a cleaner look
+            /tikz/every even column/.style={column sep=4pt},
+            /tikz/every odd column/.style={column sep=4pt},
+            legend image post style={xscale=0.8}             % Shrinks the line length to 40%
+        }
+    ]
+
+    % --- Left Plot: X-components ---
+    \nextgroupplot[
+        ylabel={$X_{31}(\bar{x})$}, xlabel={$\bar{x}$},
+        ymin=-1.05, ymax=1.05,
+        xmin=-0.51, xmax=0.51,
+        ]
+        % \addplot[color1, thick]  table [x=coord, y=ba103, col sep=comma] {mode13_X_components.csv}; \addlegendentry{$b/a=1.03$}
+        \addplot[color2, thick]  table [x=coord, y=ba110, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=1.10$}
+        % \addplot[color3, thick]  table [x=coord, y=ba118, col sep=comma] {mode13_X_components.csv}; \addlegendentry{$b/a=1.18$}
+        \addplot[color4, thick]  table [x=coord, y=ba130, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=1.30$}
+        % \addplot[color5, thick]  table [x=coord, y=ba140, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=1.40$}
+        \addplot[color6, thick]  table [x=coord, y=ba150, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=1.50$}
+        % \addplot[color7, thick]  table [x=coord, y=ba160, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=1.60$}
+        \addplot[color8, thick]  table [x=coord, y=ba170, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=1.70$}
+        % \addplot[color9, thick]  table [x=coord, y=ba180, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=1.80$}
+        \addplot[color10, thick] table [x=coord, y=ba190, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=1.90$}
+        \addplot[color11, thick] table [x=coord, y=ba200, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$b/a=2.00$}
+        % \addplot[color1, thick]  table [x=coord, y=ba103, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.03$}
+        % \addplot[color2, thick]  table [x=coord, y=ba110, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.10$}
+        % \addplot[color3, thick]  table [x=coord, y=ba118, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.18$}
+        % \addplot[color4, thick]  table [x=coord, y=ba130, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.30$}
+        % \addplot[color5, thick]  table [x=coord, y=ba140, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.40$}
+        % \addplot[color6, thick]  table [x=coord, y=ba150, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.50$}
+        % \addplot[color7, thick]  table [x=coord, y=ba160, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.60$}
+        % \addplot[color8, thick]  table [x=coord, y=ba170, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.70$}
+        % \addplot[color9, thick]  table [x=coord, y=ba180, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.80$}
+        % \addplot[color10, thick] table [x=coord, y=ba190, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$1.90$}
+        % \addplot[color11, thick] table [x=coord, y=ba200, col sep=comma] {mode31_X_components.csv}; \addlegendentry{$2.00$}
+        
+    % --- Right Plot: Y-components ---
+    \nextgroupplot[
+        ylabel={$Y_{31}(\bar{y})$}, xlabel={$\bar{y}$},
+        ymin=0, ymax=1.05,
+        xmin=-0.51, xmax=0.51,
+        ]
+        % \addplot[color1, thick]  table [x=coord, y=ba103, col sep=comma] {mode31_Y_components.csv};
+        \addplot[color2, thick]  table [x=coord, y=ba110, col sep=comma] {mode31_Y_components.csv};
+        % \addplot[color3, thick]  table [x=coord, y=ba118, col sep=comma] {mode31_Y_components.csv};
+        \addplot[color4, thick]  table [x=coord, y=ba130, col sep=comma] {mode31_Y_components.csv};
+        % \addplot[color5, thick]  table [x=coord, y=ba140, col sep=comma] {mode31_Y_components.csv};
+        \addplot[color6, thick]  table [x=coord, y=ba150, col sep=comma] {mode31_Y_components.csv};
+        % \addplot[color7, thick]  table [x=coord, y=ba160, col sep=comma] {mode31_Y_components.csv};
+        \addplot[color8, thick]  table [x=coord, y=ba170, col sep=comma] {mode31_Y_components.csv};
+        % \addplot[color9, thick]  table [x=coord, y=ba180, col sep=comma] {mode31_Y_components.csv};
+        \addplot[color10, thick] table [x=coord, y=ba190, col sep=comma] {mode31_Y_components.csv};
+        \addplot[color11, thick] table [x=coord, y=ba200, col sep=comma] {mode31_Y_components.csv};
+    \end{groupplot}
+\end{tikzpicture}
+\end{document}
